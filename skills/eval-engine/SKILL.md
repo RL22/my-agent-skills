@@ -129,4 +129,4 @@ Execute these 5 steps when designing or running agent evals:
 - **Binary Rubric Guide & Templates**: [`references/binary-rubric-guide.md`](references/binary-rubric-guide.md)
 - **Environment & Sandbox Specification**: [`references/environment-sandbox-spec.md`](references/environment-sandbox-spec.md)
 - **Trace-Mining Flywheel Architecture**: [`references/trace-mining-flywheel.md`](references/trace-mining-flywheel.md)
-- **Binary Eval Runner CLI**: `python3 ~/.agents/skills/eval-engine/scripts/run_binary_eval.py`
+- **Binary Eval Runner CLI**: `python3 scripts/run_binary_eval.py`

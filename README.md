@@ -36,6 +36,15 @@ Copy or symlink any skill folder into your agent's skills directory (for example
 ln -s "$PWD/skills/absorb" ~/.agents/skills/absorb
 ```
 
+## Dependencies between skills
+
+Some skills call scripts in a sibling skill by relative path, so install them together:
+
+- `img-brandkit` uses `model-delegation`.
+- `job-search-operator` uses `linkedin-scout` (override with `JSB_LINKEDIN_SCOUT_CLI`).
+
+`linkedin-scout` also needs `capt-chrome-agent`, which is **not in this repo**. Put it next to `linkedin-scout` in the same skills folder, or set `CAPT_CHROME_AGENT_DIR`. `absorb` uses it too, but only for dynamic or gated pages.
+
 ## Configuration
 
 `content-outline`, `video-edit` and `create-thumbnail` read `SPRINTZ_CONTENT_DIR`, and `linkedin-scout` reads `SPRINTZ_JOB_SEARCH_DIR`. Defaults point at `~/Sprintz/...`. Point these at your own directories, or edit the paths in each `SKILL.md`.

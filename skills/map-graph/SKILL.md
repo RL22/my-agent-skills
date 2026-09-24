@@ -113,5 +113,5 @@ Audit the topology against the 4 failure modes before finalizing:
 - **Model Tier Mapping Matrix**: [`references/capability-tier-matrix.md`](references/capability-tier-matrix.md)
 - **Agent Evaluation & Binary Verifiers**: [`../eval-engine/SKILL.md`](../eval-engine/SKILL.md)
 - **TypeScript State Engine**: [`assets/graph-template.ts`](assets/graph-template.ts)
-- **Live Model Discovery Tool**: Run `python3 ~/.agents/skills/map-graph/scripts/fetch-models.py` to query active model catalogs.
+- **Live Model Discovery Tool**: Run `python3 scripts/fetch-models.py` to query active model catalogs.
 

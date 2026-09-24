@@ -1,7 +1,7 @@
 ---
 name: img-brandkit
 description: Premium brand-kit image generation and visual-world presentation prompter. Generates structured 3x3 and 2x3 identity boards, logo systems, and visual decks, then executes generation directly via model-delegation (delegate.sh --task image-text or delegate.sh --task image).
-source: "Local (~/.agents/skills)"
+source: "Local"
 author: "Sprintz"
 metadata:
   author: "Sprintz"
@@ -813,11 +813,11 @@ Once the brand strategy and structured prompt are generated, execute image rende
 ### 1. For Structured Identity Decks with Copy, Labels, Slogans & Crisp Grids (Recommended Default)
 Use the `image-text` route (Codex / GPT Image) for legible typography, exact slogans, numbers, clean multi-column layouts, and diagram callouts:
 ```bash
-~/.agents/skills/model-delegation/scripts/delegate.sh --task image-text --dir ./assets/brandkit "<STRUCTURED_PROMPT>"
+../model-delegation/scripts/delegate.sh --task image-text --dir ./assets/brandkit "<STRUCTURED_PROMPT>"
 ```
 
 ### 2. For Cinematic Atmosphere, Complex Ambient Lighting & Organic Visual Art
 Use the `image` route (agy / Nano Banana Pro) for ambient light bounce, photoreal textures, and atmospheric brand moodboards:
 ```bash
-~/.agents/skills/model-delegation/scripts/delegate.sh --task image --dir ./assets/brandkit "<STRUCTURED_PROMPT>"
+../model-delegation/scripts/delegate.sh --task image --dir ./assets/brandkit "<STRUCTURED_PROMPT>"
 ```

@@ -1,6 +1,6 @@
 """
 validate_outreach.py - Deterministic Validation Gate for Outreach Dossiers.
-Part of the linkedin-scout skill (~/.agents/skills/linkedin-scout/scripts/validate_outreach.py).
+Part of the linkedin-scout skill (scripts/validate_outreach.py).
 
 Validates outreach dossiers against strict quality, platform, and character constraints:
 1. Connection Notes: Must be <= 200 Unicode characters.

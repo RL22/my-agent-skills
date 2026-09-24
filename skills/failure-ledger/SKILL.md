@@ -53,7 +53,7 @@ For each cataloged failure, identify the divergence between model assumption and
 
 Translate each verified root cause into a compact rule. Enforce **positive phrasing**:
 - Formulate the rule as a direct operational posture: state what the agent *must do*, never what it must avoid.
-- Run `python3 ~/.agents/skills/failure-ledger/scripts/compile_rules.py` to auto-aggregate ledger categories and draft candidate rules.
+- Run `python3 scripts/compile_rules.py` to auto-aggregate ledger categories and draft candidate rules.
 - Anchor the instruction with a **leading word** (`tight`, `root-first`, `binary-probe`, `ledger`).
 - Strip all elephant-in-the-room negations (eliminate "never", "do not", "avoid", "don't").
 - Prune all no-ops: discard general advice that pretrained models follow by default. Keep only project-specific, tool-specific, or shell-specific invariants.

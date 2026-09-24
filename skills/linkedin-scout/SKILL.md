@@ -7,7 +7,9 @@ description: Automated LinkedIn discovery of people, job postings, companies, fe
 
 High-performance, anti-bot-resilient LinkedIn network discovery and contact prospecting engine. Combines passive Chrome DevTools Protocol (CDP) network interception, sub-5ms C-engine DOM parsing (`selectolax`), Levenshtein entity resolution (`rapidfuzz`), and embedded relational storage (`duckdb`).
 
-Interacts with system Chrome via the `capt-chrome-agent` substrate and its persistent authenticated profile manager.
+Interacts with system Chrome via the `capt-chrome-agent` substrate and its persistent authenticated profile manager. `capt-chrome-agent` is a separate skill and is **not included in this repo**; install it next to this skill or set `CAPT_CHROME_AGENT_DIR` (see [Prerequisites](#prerequisites--browser-integration)).
+
+All paths below are relative to this skill's folder.
 
 ---
 
@@ -15,7 +17,7 @@ Interacts with system Chrome via the `capt-chrome-agent` substrate and its persi
 
 ```
 ┌────────────────────────────────────────────────────────┐
-│ Layer 2: Domain Engine (~/.agents/skills/linkedin-scout)│
+│ Layer 2: Domain Engine (linkedin-scout)                │
 │ - Schemas: Pydantic v2 (LinkedInContact, JobPosting,   │
 │   Company, Post, DMThread, EngagementAction,           │
 │   SearchCluster)                                       │
@@ -27,7 +29,7 @@ Interacts with system Chrome via the `capt-chrome-agent` substrate and its persi
                             │ drives / attaches via CDP
                             ▼
 ┌────────────────────────────────────────────────────────┐
-│ Layer 1: Substrate (~/.agents/skills/capt-chrome-agent) │
+│ Layer 1: Substrate (capt-chrome-agent, separate skill) │
 │ - Persistent Profiles (~/.config/chrome-agent/profiles)│
 │ - Chrome CDP WebSocket Server (port 9222/9224)         │
 │ - Anti-bot safe navigation                             │
@@ -61,11 +63,11 @@ Interacts with system Chrome via the `capt-chrome-agent` substrate and its persi
 
 ## CLI Command Reference
 
-The unified CLI is located at `~/.agents/skills/linkedin-scout/scripts/cli.py`:
+The unified CLI is `scripts/cli.py`:
 
 ```bash
 # Alias for quick access
-alias linkedin-scout="python3 ~/.agents/skills/linkedin-scout/scripts/cli.py"
+alias linkedin-scout="python3 /path/to/linkedin-scout/scripts/cli.py"
 ```
 
 ### 1. Live Contact Discovery (`discover`)
@@ -73,19 +75,19 @@ Navigates active Chrome to canned search queries, intercepts live Voyager GraphQ
 
 ```bash
 # Discover 1st & 2nd degree connections for target company & roles:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py discover \
+python3 scripts/cli.py discover \
   --company "Umbra" \
   --roles "Engineering Manager, Web,Head of Web Engineering" \
   --network F,S
 
 # Discover with custom search keywords:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py discover \
+python3 scripts/cli.py discover \
   --keywords "Zephyria" \
   --roles "Solo Marketing Engineer,Agent Infrastructure Lead" \
   --network F,S
 
 # Direct URL capture:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py discover \
+python3 scripts/cli.py discover \
   --url "https://www.linkedin.com/search/results/people/?keywords=Verdant&network=%5B%22F%22%2C%22S%22%5D" \
   --roles "Marketing Engineer,Senior Web Developer"
 ```
@@ -95,18 +97,18 @@ Inspect an individual LinkedIn profile (local equivalent of `linkedin-cli`'s `pe
 
 ```bash
 # Inspect a profile by handle or URL:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py inspect tony-stark-eng --all
+python3 scripts/cli.py inspect tony-stark-eng --all
 
 # Inspect with target roles for RapidFuzz role fit scoring & warmth tiering:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py inspect "https://www.linkedin.com/in/tony-stark-eng" \
+python3 scripts/cli.py inspect "https://www.linkedin.com/in/tony-stark-eng" \
   --roles "Head of Growth Engineering,Site Engineer" \
   --experience
 
 # Output structured JSON for agent pipelines:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py inspect tony-stark-eng --json
+python3 scripts/cli.py inspect tony-stark-eng --json
 
 # Read previously saved profile from local DuckDB without browser launch:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py inspect tony-stark-eng --cached --all
+python3 scripts/cli.py inspect tony-stark-eng --cached --all
 ```
 
 ### 3. Query Stored Network Contacts (`list`)
@@ -114,24 +116,24 @@ Filter and inspect contacts stored in DuckDB:
 
 ```bash
 # List all contacts at a company:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py list --company "Verdant" --limit 15
+python3 scripts/cli.py list --company "Verdant" --limit 15
 
 # Filter by minimum role match score:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py list --company "Umbra" --min-score 50.0
+python3 scripts/cli.py list --company "Umbra" --min-score 50.0
 ```
 
 ### 4. Sync Markdown Network Dossiers (`sync-network`)
 Ingest or refresh contacts from `_shared_facts/NETWORK.md` into DuckDB:
 
 ```bash
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py sync-network
+python3 scripts/cli.py sync-network
 ```
 
 ### 5. Fast Parse Offline HTML Dumps (`parse-html`)
 Parse raw saved LinkedIn search HTML offline without a running browser:
 
 ```bash
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py parse-html /tmp/search_dump.html \
+python3 scripts/cli.py parse-html /tmp/search_dump.html \
   --company "Hexlight" \
   --roles "Senior Marketing Engineer,Web Engineer" \
   --save
@@ -141,7 +143,7 @@ python3 ~/.agents/skills/linkedin-scout/scripts/cli.py parse-html /tmp/search_du
 Benchmark parsing speeds and evaluate matching accuracy across active pipeline roles:
 
 ```bash
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py eval
+python3 scripts/cli.py eval
 ```
 
 ### 7. Live Job Search Discovery (`discover-jobs`)
@@ -149,12 +151,12 @@ Navigates active Chrome to a job search results page, DOM-parses posting cards, 
 
 ```bash
 # Discover open roles at a target company:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py discover-jobs \
+python3 scripts/cli.py discover-jobs \
   --company "Verdant" \
   --roles "Principal Marketing Engineer,Head of Growth Engineering"
 
 # Discover by keywords + location:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py discover-jobs \
+python3 scripts/cli.py discover-jobs \
   --keywords "Marketing Engineer" --location "Remote"
 ```
 
@@ -163,14 +165,14 @@ Inspect a single job posting (local equivalent of `linkedin-cli`'s `jobs fetch`)
 
 ```bash
 # Inspect by job ID or full URL:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py inspect-job 4123456789 \
+python3 scripts/cli.py inspect-job 4123456789 \
   --roles "Senior Web Developer" --company "Verdant"
 
 # Output structured JSON for agent pipelines:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py inspect-job 4123456789 --json
+python3 scripts/cli.py inspect-job 4123456789 --json
 
 # Read previously saved posting from local DuckDB without browser launch:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py inspect-job 4123456789 --cached
+python3 scripts/cli.py inspect-job 4123456789 --cached
 ```
 
 ### 9. Detailed Company Inspection (`inspect-company`)
@@ -178,10 +180,10 @@ Inspect a company's LinkedIn About page (local equivalent of `linkedin-cli`'s `c
 
 ```bash
 # Inspect by slug or full URL:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py inspect-company umbra
+python3 scripts/cli.py inspect-company umbra
 
 # Read previously saved company from local DuckDB without browser launch:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py inspect-company umbra --cached
+python3 scripts/cli.py inspect-company umbra --cached
 ```
 
 ### 10. Query Stored Job Postings (`list-jobs`)
@@ -189,17 +191,17 @@ Filter job postings stored in DuckDB:
 
 ```bash
 # List open roles at a company above a role-fit threshold:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py list-jobs --company "Umbra" --min-score 50.0
+python3 scripts/cli.py list-jobs --company "Umbra" --min-score 50.0
 
 # Filter by pipeline stage:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py list-jobs --status applied
+python3 scripts/cli.py list-jobs --status applied
 ```
 
 ### 11. Query Stored Companies (`list-companies`)
 Filter companies stored in DuckDB:
 
 ```bash
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py list-companies --industry "Artificial Intelligence"
+python3 scripts/cli.py list-companies --industry "Artificial Intelligence"
 ```
 
 ### 12. Live Feed Discovery (`discover-feed`)
@@ -207,39 +209,39 @@ Read-only: scoped to a company's Posts tab or a person's Activity tab, captures 
 
 ```bash
 # Scope to a company's Posts tab, scored against target topics:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py discover-feed \
+python3 scripts/cli.py discover-feed \
   --company "verdant" --topics "Marketing Engineering,Design Systems"
 
 # Scope to a person's Activity tab:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py discover-feed --person "tony-stark-eng"
+python3 scripts/cli.py discover-feed --person "tony-stark-eng"
 ```
 
 ### 13. Detailed DM Thread Inspection (`inspect-thread`)
 Read-only: reads an already-open conversation (messages the browser has already loaded). Does not send anything.
 
 ```bash
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py inspect-thread \
+python3 scripts/cli.py inspect-thread \
   "https://www.linkedin.com/messaging/thread/<thread-id>/"
 
 # Read previously saved thread from local DuckDB without browser launch:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py inspect-thread <thread-id> --cached
+python3 scripts/cli.py inspect-thread <thread-id> --cached
 ```
 
 ### 14. Query Stored Posts (`list-posts`)
 ```bash
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py list-posts --author "Tony Stark" --min-score 50.0
+python3 scripts/cli.py list-posts --author "Tony Stark" --min-score 50.0
 ```
 
 ### 15. Query Stored DM Threads (`list-threads`)
 ```bash
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py list-threads --participant "Tony Stark"
+python3 scripts/cli.py list-threads --participant "Tony Stark"
 ```
 
 ### 16. Draft an Engagement Action (`queue-engagement`)
 Records a rubric-scored draft for human review. Always writes `status="drafted"` -- this command cannot post, like, comment, repost, or send a message; it only saves text for you to act on yourself:
 
 ```bash
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py queue-engagement \
+python3 scripts/cli.py queue-engagement \
   --target-type post --target-id 7123456789 \
   --action-type comment \
   --draft-content "Strong take on marketing engineering staffing at Verdant -- curious how you're balancing it against platform work." \
@@ -248,14 +250,14 @@ python3 ~/.agents/skills/linkedin-scout/scripts/cli.py queue-engagement \
 
 ### 17. Review the Drafted Engagement Queue (`list-engagement`)
 ```bash
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py list-engagement --status drafted --min-score 70.0
+python3 scripts/cli.py list-engagement --status drafted --min-score 70.0
 ```
 
 ### 18. Approve or Reject a Drafted Action (`review-engagement`)
 Records your decision only -- approving does not post it. Performing the comment/like/repost/message in your own browser remains a separate, manual step:
 
 ```bash
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py review-engagement <action-id> --status approved
+python3 scripts/cli.py review-engagement <action-id> --status approved
 ```
 
 ### 19. Passive Feed Listener (`listen-feed`)
@@ -263,40 +265,46 @@ Read-only and hands-off: you browse company Posts tabs and person Activity tabs 
 
 ```bash
 # Start the listener, then browse the profiles' activity pages yourself:
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py listen-feed --seconds 180
+python3 scripts/cli.py listen-feed --seconds 180
 ```
 
 ### 20. Store a Pasted Post (`add-post`)
 Builds a post from a URL you copied (must contain an activity id) plus its text and counts; idempotent by post ID. Author handle is taken from a `/posts/{handle}_` permalink when `--author-handle` is omitted.
 
 ```bash
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py add-post \
+python3 scripts/cli.py add-post \
   --url "https://www.linkedin.com/feed/update/urn:li:activity:7000000000000000000/" \
   --author "Tony Stark" --author-handle tony-stark-eng --text-file post.txt --likes 42 --comments 5
-pbpaste | python3 ~/.agents/skills/linkedin-scout/scripts/cli.py add-post --url "<permalink>" --author "Tony Stark" --text -
+pbpaste | python3 scripts/cli.py add-post --url "<permalink>" --author "Tony Stark" --text -
 ```
 
 ### 21. Connections With Post Data (`list-connections --with-posts`)
 Joins stored posts to stored connections by profile handle (person authors) and company slug (company authors): post count and average engagement per connection.
 
 ```bash
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py list-connections --with-posts --limit 20 --json
+python3 scripts/cli.py list-connections --with-posts --limit 20 --json
 ```
 
 ---
 
 ## Prerequisites & Browser Integration
 
-`linkedin-scout` uses the authenticated Chrome profile managed by `capt-chrome-agent`:
+`linkedin-scout` uses the authenticated Chrome profile managed by `capt-chrome-agent`, a separate skill that is **not bundled in this repo**. The CLI looks for it in this order:
+
+1. `$CAPT_CHROME_AGENT_DIR`
+2. A sibling skill folder (`../capt-chrome-agent`)
+3. `~/.agents/skills/capt-chrome-agent`
+
+Below, `$CAPT_CHROME_AGENT_DIR` stands for wherever it lives:
 
 1. **Check or Initialize Profile**:
    ```bash
-   python3 ~/.agents/skills/capt-chrome-agent/scripts/profile_manager.py list
+   python3 "$CAPT_CHROME_AGENT_DIR"/scripts/profile_manager.py list
    ```
 2. **One-Time Authentication**:
    If unauthenticated, run the interactive setup flow once:
    ```bash
-   python3 ~/.agents/skills/capt-chrome-agent/scripts/profile_manager.py setup linkedin \
+   python3 "$CAPT_CHROME_AGENT_DIR"/scripts/profile_manager.py setup linkedin \
      --url "https://www.linkedin.com/login" \
      --check "feed"
    ```
@@ -309,7 +317,7 @@ python3 ~/.agents/skills/linkedin-scout/scripts/cli.py list-connections --with-p
 Run the full end-to-end regression test suite:
 
 ```bash
-python3 ~/.agents/skills/linkedin-scout/tests/test_linkedin_scout.py
+python3 tests/test_linkedin_scout.py
 ```
 *Target benchmark*: 11/11 tests passing in sub-5ms.
 
