@@ -23,6 +23,7 @@ Self-authored [Agent Skills](https://agentskills.io) that work across Claude Cod
 | [`model-delegation`](skills/model-delegation/SKILL.md) | Execute runtime cross-CLI subprocess calls via delegate.sh across agy (Gemini), codex (GPT), and claude (Claude). Routes high-volume reads, ... |
 | [`og-image`](skills/og-image/SKILL.md) | Design and generate Open Graph / social preview images (1200x630 cards) using a brand-agnostic atomic design system and @vercel/og (Satori/I... |
 | [`programmatic-brand-assets`](skills/programmatic-brand-assets/SKILL.md) | Use when designing logos, favicons, PWA icons, app icons, brand marks, or brand asset packages from SVG, Canvas, p5.js, or deterministic geo... |
+| [`sketch`](skills/sketch/SKILL.md) | Hand-drawn, lo-fi UX deliverables from a JSON spec: user flows, screens, component sheets, sitemaps, journey maps, iter... |
 | [`skillvault`](skills/skillvault/SKILL.md) | Establish ~/.agents/skills as the single source of truth for reusable agent skills, evaluate candidate skills with SIFT, and retrofit old ag... |
 | [`video-edit`](skills/video-edit/SKILL.md) | Turn recorded raw footage into a finished, published video using a local agentic pipeline: MLX-Whisper transcription, FFmpeg cuts, Remotion ... |
 | [`virtual-staging`](skills/virtual-staging/SKILL.md) | Virtual staging for real estate. Enforces multi-angle fidelity via strict masking (PWA) and exact-manifest prompts. Preserves original archi... |
@@ -38,10 +39,12 @@ ln -s "$PWD/skills/absorb" ~/.agents/skills/absorb
 
 ## Configuration
 
+`sketch` renders with Node 18+ and a headless Chromium: run `npm install && npx playwright-core install chromium` once inside `skills/sketch/`.
+
 `content-outline`, `video-edit` and `create-thumbnail` read `SPRINTZ_CONTENT_DIR`, and `linkedin-scout` reads `SPRINTZ_JOB_SEARCH_DIR`. Defaults point at `~/Sprintz/...`. Point these at your own directories, or edit the paths in each `SKILL.md`.
 
 ## Licensing
 
-Repository code is MIT (see `LICENSE`). A skill's own `license:` frontmatter takes precedence; `elg-engine` is Apache-2.0.
+Repository code is MIT (see `LICENSE`). A skill's own `license:` frontmatter takes precedence; `elg-engine` is Apache-2.0. `sketch` bundles rough.js (MIT) and three SIL OFL fonts, with their licenses in `skills/sketch/scripts/vendor/`.
 
 `linkedin-scout` automates a logged-in LinkedIn session. Review LinkedIn's terms and use it only on your own account and data. All fixtures in this repo are fictional.
