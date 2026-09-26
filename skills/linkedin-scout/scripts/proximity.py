@@ -1,6 +1,6 @@
 """
 proximity.py - Deterministic Proximity and Warmth Evaluation Engine.
-Part of the linkedin-scout skill (~/.agents/skills/linkedin-scout/scripts/proximity.py).
+Part of the linkedin-scout skill (scripts/proximity.py).
 
 Implements the 7-Degree Rubric Grading and 4-Tier Contact Ranking models deterministically:
 1. Scores individual mutual connection paths (0-100 integer points).

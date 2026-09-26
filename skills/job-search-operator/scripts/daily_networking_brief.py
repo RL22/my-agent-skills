@@ -16,7 +16,8 @@ from urllib.parse import quote_plus
 
 
 DEFAULT_CONFIG = "~/.config/job-search-operator/config.yaml"
-DEFAULT_SCOUT_CLI = "~/.agents/skills/linkedin-scout/scripts/cli.py"
+# Sibling skill in the same skills folder; override with JSB_LINKEDIN_SCOUT_CLI.
+DEFAULT_SCOUT_CLI = str(Path(__file__).resolve().parents[2] / "linkedin-scout" / "scripts" / "cli.py")
 SCOUT_CLI_ENV = "JSB_LINKEDIN_SCOUT_CLI"
 ACTIVE_STATUSES = {
     "researching": 12, "networking": 26, "drafting": 26, "ready": 22,

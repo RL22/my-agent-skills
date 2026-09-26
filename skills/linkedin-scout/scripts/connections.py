@@ -39,7 +39,15 @@ from urllib.parse import unquote, urlparse
 _CURRENT_DIR = Path(__file__).resolve().parent
 if str(_CURRENT_DIR) not in sys.path:
     sys.path.insert(0, str(_CURRENT_DIR))
-_CHROME_AGENT_SCRIPTS = Path.home() / ".agents" / "skills" / "capt-chrome-agent" / "scripts"
+# capt-chrome-agent: $CAPT_CHROME_AGENT_DIR, else a sibling skill, else ~/.agents/skills
+_CHROME_AGENT_SCRIPTS = next(
+    (d / "scripts" for d in (
+        Path(os.environ["CAPT_CHROME_AGENT_DIR"]).expanduser() if os.environ.get("CAPT_CHROME_AGENT_DIR") else None,
+        _CURRENT_DIR.parent.parent / "capt-chrome-agent",
+        Path.home() / ".agents" / "skills" / "capt-chrome-agent",
+    ) if d is not None and (d / "scripts").exists()),
+    Path.home() / ".agents" / "skills" / "capt-chrome-agent" / "scripts",
+)
 if _CHROME_AGENT_SCRIPTS.exists() and str(_CHROME_AGENT_SCRIPTS) not in sys.path:
     sys.path.insert(0, str(_CHROME_AGENT_SCRIPTS))
 

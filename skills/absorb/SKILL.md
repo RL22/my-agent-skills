@@ -115,5 +115,5 @@ Present the implementation plan and execution graph to the human partner:
 - **Media Extraction Recipes**: [`references/media-extractors.md`](references/media-extractors.md)
 - **Technical Distillation Pattern**: [`references/distillation-pattern.md`](references/distillation-pattern.md)
 - **Graph Engineering Protocol**: [`../map-graph/SKILL.md`](../map-graph/SKILL.md)
-- **Chrome Agent (CDP) Reference**: [`../capt-chrome-agent/SKILL.md`](../capt-chrome-agent/SKILL.md)
+- **Chrome Agent (CDP) Reference**: `capt-chrome-agent` skill (separate, not bundled in this repo; only needed for dynamic or gated pages)
 - **Fabric Catalog**: [`../fbrc-fabric/SKILL.md`](../fbrc-fabric/SKILL.md)

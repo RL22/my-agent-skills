@@ -27,8 +27,8 @@ newest post is more than two days old, or the user asks for fresh posts, refresh
 with a scoped read-only pull, then rerun the brief:
 
 ```sh
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py discover-feed --company SLUG
-python3 ~/.agents/skills/linkedin-scout/scripts/cli.py discover-feed --person HANDLE
+python3 ../linkedin-scout/scripts/cli.py discover-feed --company SLUG
+python3 ../linkedin-scout/scripts/cli.py discover-feed --person HANDLE
 ```
 
 Scope every pull with `--company` or `--person`; the home feed has no reliable
