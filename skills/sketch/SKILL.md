@@ -2,7 +2,7 @@
 name: sketch
 description: Sketch UI as hand-drawn, lo-fi wireframe images rendered from a JSON spec — a user flow, a single screen, a component sheet, an iteration (rejected vs refined), a redesign (current vs new), a sitemap, a customer journey map, a trace of an existing page, or its responsive breakpoints. Use for /sketch, "sketch this", "wireframe", or design assets for case studies, posts, pitches, or docs.
 license: MIT
-compatibility: "Agent-agnostic (Agent Skills standard). Needs Node 18+ and a headless Chromium via playwright-core — rendering runs rough.js and real font metrics in a browser, which shell/python alone cannot do. No agent-specific binaries."
+compatibility: "Agent-agnostic (Agent Skills standard). Needs Node 20+ and a headless Chromium via playwright-core — rendering runs rough.js and real font metrics in a browser, which shell/python alone cannot do. No agent-specific binaries."
 argument-hint: "<flow|screen|sheet|iterate|redesign|sitemap|journey|trace|responsive|photo> [what to sketch]"
 metadata:
   author: Rodney Lewis
@@ -41,7 +41,7 @@ show the table and ask.
 
 ## Every command runs this loop
 
-1. **Setup** — once per machine: `npm install` in this skill's folder.
+1. **Setup** — once per machine with Node 20+: `npm install` in this skill's folder.
 2. **Start from the command's example**: copy `examples/<command>.json` next to where the image will live
    (the calling project, e.g. `public/case-studies/<slug>/`). This skill folder holds templates only.
    `trace` and `responsive` compile their spec from snapshots instead — their files replace steps 2–3.

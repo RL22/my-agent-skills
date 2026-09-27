@@ -6,7 +6,7 @@ license: MIT
 compatibility: Agent-agnostic. Compatible with Antigravity, Claude Code, Cursor, Codex, OpenCode.
 metadata:
   author: Sprintz
-  version: "1.0.0"
+  version: "1.1.0"
   category: design-and-craft
 ---
 
@@ -114,15 +114,19 @@ Close with authority and conversion:
 
 ## Automated Audit Tool
 
-Audit any README for GHFM craftsmanship and Product Hunt readiness:
+Audit any README for GHFM craftsmanship. Add `--producthunt` only when the project is launching: it also
+scores the Product Hunt embed and social proof (Star History, contributors, Discord). Without it those checks
+are skipped and the score is rescaled, so a README is never pushed toward launch widgets it doesn't need.
 
 ```bash
 # Run automated score & recommendations
 python3 <skill>/scripts/audit-readme.py path/to/README.md
 
-# Audit with verbose check details
-python3 <skill>/scripts/audit-readme.py path/to/README.md --verbose
+# Launch readiness, with verbose check details
+python3 <skill>/scripts/audit-readme.py path/to/README.md --producthunt --verbose
 ```
+
+Pass `--producthunt` to the audit whenever the request carries `--producthunt` or mentions a launch.
 
 ---
 

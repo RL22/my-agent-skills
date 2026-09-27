@@ -79,7 +79,11 @@ export function compile(snap, ov = {}, opts = {}) {
 
   // 2. primary: forced by overrides, else the highest-contrast filled button (contrast ≥ 1.6)
   const buttons = nodes.filter((n) => n.kind === 'button');
-  let primary = ov.primary ? buttons.find((n) => matches(ov.primary, n)) : null;
+  const primarySelector = typeof ov.primary === 'string' ? ov.primary : null;
+  let primary = primarySelector == null ? null : buttons.find((n) => matches(primarySelector, n));
+  if (primarySelector != null && !primary) {
+    throw new Error(`override primary: no button matches selector "${primarySelector}"; update the selector or use primary: false`);
+  }
   if (!primary && ov.primary !== false) {
     let best = 0;
     for (const n of buttons) {

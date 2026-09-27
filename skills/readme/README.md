@@ -51,25 +51,27 @@ It loads only the template it needs. The references cover the GitHub rendering d
 ## Audit any README
 
 `scripts/audit-readme.py` scores a README out of 100 across five areas (top of page, quickstart, visuals,
-GitHub craft, launch and trust) and subtracts points for too many external image hosts, layout-shifting images
+GitHub craft, trust) and subtracts points for too many external image hosts, layout-shifting images
 and template placeholders left unfilled. It reads one local file and makes no network calls.
 
 ```bash
 python3 scripts/audit-readme.py path/to/README.md --verbose
+python3 scripts/audit-readme.py path/to/README.md --producthunt   # launching? score the launch checks too
 ```
 
 ```text
-Overall Score: 80 / 100 (Raw: 80, Penalties: -0)
+=== GHFM README Audit Report (standard) ===
+Overall Score: 89 / 100 (Raw: 89, Penalties: -0)
 Above-the-Fold & Hero            : 25 / 25 pts
-Frictionless Quickstart          : 10 / 20 pts
+Frictionless Quickstart          : 20 / 20 pts
 ...
 ```
 
 It exits 1 below `--threshold` (default 70), so it can gate a CI job. `--json` prints machine-readable results.
 
 > [!NOTE]
-> The launch-and-trust checks expect a Product Hunt badge and a star history chart. Skip them for projects
-> that aren't launching; a clear README without them is better than one padded to hit 100.
+> Product Hunt embeds and star-history charts are scored only with `--producthunt`. A project that isn't
+> launching isn't marked down for leaving them out.
 
 ## License
 

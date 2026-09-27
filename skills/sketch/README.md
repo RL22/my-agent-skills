@@ -8,7 +8,7 @@ Your agent writes a small JSON spec. A seeded renderer draws it like black felt-
 so the same spec always gives you the same image.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-2f2f2f?style=flat-square)](#credits-and-license)
-[![Node 18+](https://img.shields.io/badge/node-18%2B-2f2f2f?style=flat-square)](#quickstart)
+[![Node 20+](https://img.shields.io/badge/node-20%2B-2f2f2f?style=flat-square)](#quickstart)
 [![Agent Skills standard](https://img.shields.io/badge/standard-Agent%20Skills-2f2f2f?style=flat-square)](https://agentskills.io)
 
 [Gallery](#gallery) • [Quickstart](#quickstart) • [Commands](#commands) • [How it works](#how-it-works)

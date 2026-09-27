@@ -1,5 +1,11 @@
 // Load playwright-core with an actionable message when the one-time setup hasn't run.
 export async function chromium() {
+  const nodeMajor = Number.parseInt(process.versions.node, 10);
+  if (nodeMajor < 20) {
+    console.error(`sketch: Node 20+ is required (found Node ${process.versions.node}). Upgrade Node, then run npm install.`);
+    process.exit(1);
+  }
+
   try {
     return (await import('playwright-core')).chromium;
   } catch (e) {

@@ -93,7 +93,7 @@ Some skills call scripts in a sibling skill by relative path, so install them to
 Most skills need nothing beyond the agent. These need a one-time setup:
 
 <details>
-<summary><b>sketch</b>: Node 18+ and a headless Chromium</summary>
+<summary><b>sketch</b>: Node 20+ and a headless Chromium</summary>
 <br>
 
 ```bash

@@ -3,14 +3,55 @@
 // conditions (viewport, reduced motion, fixed clock/locale/timezone, trackers blocked, lazy content
 // loaded). trace.mjs compiles the snapshot; re-running trace never touches the network.
 //   node snapshot.mjs <url|file.html> -o page.snap.json [--mobile] [--width 1280] [--height 800]
-// Writes <out>.png (viewport screenshot) beside the snapshot for reference.
-import { writeFileSync, existsSync } from 'node:fs';
-import { resolve } from 'node:path';
-import { pathToFileURL } from 'node:url';
+// Writes a generation-addressed viewport screenshot beside the snapshot and references it from the JSON.
+import { createHash } from 'node:crypto';
+import { existsSync, readFileSync, realpathSync, renameSync, statSync, unlinkSync, writeFileSync } from 'node:fs';
+import { basename, dirname, join, resolve } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { chromium as loadChromium } from './lib/deps.mjs';
 
 const BLOCK = /google-analytics|googletagmanager|doubleclick|googlesyndication|facebook\.net|connect\.facebook|hotjar|segment\.(io|com)|intercom|hs-scripts|hs-analytics|clarity\.ms|fullstory|mixpanel|amplitude|sentry|newrelic|nr-data|tiktok|linkedin\.com\/px|snap\.licdn|bat\.bing|crisp\.chat|drift\.com|zdassets/;
 const USAGE = 'usage: snapshot.mjs <url|file.html> -o page.snap.json [--mobile] [--width 1280] [--height 800]';
+export const SNAPSHOT_FORMAT_VERSION = 2;
+
+const sha256 = (value) => createHash('sha256').update(value).digest('hex');
+
+export function describeSource(target) {
+  let local;
+  if (target.startsWith('file:')) local = fileURLToPath(target);
+  else if (existsSync(target)) local = target;
+  if (local) {
+    const canonicalPath = realpathSync(resolve(local));
+    const contentSha256 = sha256(readFileSync(canonicalPath));
+    return {
+      url: pathToFileURL(canonicalPath).href,
+      provenance: {
+        kind: 'file',
+        identity: sha256(`file\0${canonicalPath}\0${contentSha256}`),
+        displayUrl: `file:${basename(canonicalPath)}`,
+        contentSha256,
+      },
+      localPath: canonicalPath,
+    };
+  }
+  const url = /^https?:\/\//.test(target) ? new URL(target).href : `https://${target}`;
+  return { url, provenance: { kind: 'url', identity: sha256(`url\0${url}`), displayUrl: url } };
+}
+
+function sameUnderlyingFile(sourcePath, outputPath) {
+  const source = realpathSync(sourcePath);
+  const output = resolve(outputPath);
+  if (source === output) return true;
+  if (!existsSync(output)) return false;
+  const a = statSync(source), b = statSync(output);
+  return a.dev === b.dev && a.ino === b.ino;
+}
+
+function atomicWriteJson(file, value) {
+  const tmp = join(dirname(resolve(file)), `.${basename(file)}.${process.pid}.tmp`);
+  writeFileSync(tmp, JSON.stringify(value, null, 1) + '\n');
+  renameSync(tmp, file);
+}
 
 function parseArgs(argv) {
   const a = { width: 1280, height: 800 };
@@ -174,7 +215,11 @@ function extract() {
 
 async function main() {
   const a = parseArgs(process.argv.slice(2));
-  const url = existsSync(a.target) ? pathToFileURL(resolve(a.target)).href : /^https?:\/\//.test(a.target) ? a.target : `https://${a.target}`;
+  const source = describeSource(a.target);
+  if (source.localPath && sameUnderlyingFile(source.localPath, a.out)) {
+    throw new Error('source and output refer to the same file');
+  }
+  const url = source.url;
   const browser = await (await loadChromium()).launch();
   try {
     const context = await browser.newContext({
@@ -196,17 +241,30 @@ async function main() {
     await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});
     await page.evaluate(() => document.fonts.ready);
     const data = await page.evaluate(extract);
-    const shot = a.out.replace(/(\.snap)?\.json$/, '') + '.png';
-    await page.screenshot({ path: shot });
+    const outputDir = dirname(resolve(a.out));
+    const pendingShot = join(outputDir, `.${basename(a.out)}.${process.pid}.pending.png`);
+    await page.screenshot({ path: pendingShot });
+    const screenshotSha256 = sha256(readFileSync(pendingShot));
+    const generation = sha256(`snapshot\0${SNAPSHOT_FORMAT_VERSION}\0${source.provenance.identity}\0${a.width}x${a.height}x${!!a.mobile}\0${screenshotSha256}`).slice(0, 20);
+    const shot = join(outputDir, `capture-${generation}.png`);
+    if (existsSync(shot) && sha256(readFileSync(shot)) === screenshotSha256) unlinkSync(pendingShot);
+    else renameSync(pendingShot, shot);
     const snap = {
-      version: 1, url: url.startsWith('file:') ? `file:${url.split('/').pop()}` : url, capturedAt: new Date().toISOString(), chromium: browser.version(),
+      version: SNAPSHOT_FORMAT_VERSION,
+      generation,
+      url: source.provenance.displayUrl,
+      source: source.provenance,
+      capturedAt: new Date().toISOString(), chromium: browser.version(),
       viewport: { width: a.width, height: a.height, mobile: !!a.mobile }, ...data,
+      screenshot: { file: basename(shot), sha256: screenshotSha256 },
     };
-    writeFileSync(a.out, JSON.stringify(snap, null, 1));
+    atomicWriteJson(a.out, snap);
     console.log(JSON.stringify({ out: resolve(a.out), screenshot: resolve(shot), nodes: snap.nodes.length, docHeight: snap.docHeight }));
   } finally {
     await browser.close();
   }
 }
 
-main().catch((e) => { console.error(`snapshot error: ${e.message}`); process.exit(1); });
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch((e) => { console.error(`snapshot error: ${e.message}`); process.exit(1); });
+}

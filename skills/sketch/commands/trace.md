@@ -10,11 +10,13 @@ snapshot always yields the same sketch. The rules (the trace grammar) are the he
    ```bash
    node <skill>/scripts/snapshot.mjs <url|file.html> -o <dir>/<name>.snap.json    # --mobile for 390×844
    ```
-   Writes `<name>.snap.json` plus `<name>.png` (what the page looked like). Commit both next to the image:
-   the snapshot *is* the source; recapture only when you mean to update the sketch.
+   Writes `<name>.snap.json` plus a generation-addressed `capture-<generation>.png` (what the page looked like).
+   The JSON is published last and records the screenshot filename and SHA-256 integrity hash, so it is the
+   canonical commit marker. Commit both next to the image: the snapshot *is* the source; recapture only when
+   you mean to update the sketch. Failed captures leave an existing snapshot JSON usable.
 2. **Compile**: `node <skill>/scripts/trace.mjs <name>.snap.json -o <name>.json` (`--full` for up to four
    screens of scroll instead of the first viewport).
-3. **Render** (SKILL.md loop step 4) and compare the render with `<name>.png`.
+3. **Render** (SKILL.md loop step 4) and compare the render with the `screenshot.file` named in the snapshot.
 4. **Correct with overrides, never by editing the spec.** Put every correction in `<name>.overrides.json`,
    re-run step 2 with `--overrides <name>.overrides.json`, and repeat. The spec stays a pure output.
 5. To use the trace inside a `redesign` or `flow`, reference the compiled spec's frame as a starting point

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-audit-readme.py - Hardened GHFM & Product Hunt Readiness Auditor
+audit-readme.py - GHFM README auditor (add --producthunt for launch readiness)
 
 Performs a rigorous, ReDoS-safe audit of any README.md against:
 1. Above-the-Fold & Hero impact
 2. Frictionless Quickstart ergonomics
 3. Visual Assets & Architecture
 4. GHFM Craftsmanship & CLS prevention
-5. Product Hunt & Trust integrity
+5. Trust (license), plus Product Hunt embed and social proof with --producthunt
 6. Third-party CDN dependency budgets & Placeholder validation
 """
 
@@ -58,7 +58,7 @@ def extract_image_origins(content: str) -> list:
     return sorted(list(origins))
 
 
-def audit_readme(content: str, file_path: str, max_origins: int = 4) -> dict:
+def audit_readme(content: str, file_path: str, max_origins: int = 4, launch: bool = False) -> dict:
     total_chars = len(content)
     raw_lines = content.splitlines()
     total_lines = len(raw_lines)
@@ -258,14 +258,17 @@ def audit_readme(content: str, file_path: str, max_origins: int = 4) -> dict:
     details["craft"] = craft_checks
 
     # -------------------------------------------------------------
-    # 5. Product Hunt & Trust Integrity (Max 15 pts)
+    # 5. Trust (Max 5 pts), Launch & Trust with --producthunt (Max 15 pts)
     # -------------------------------------------------------------
     ph_score = 0
     ph_checks = []
 
-    # Product Hunt widget or badge link
+    # Launch-only checks (Product Hunt embed, social proof) count only with --producthunt.
+    # A README that isn't launching is not penalised for leaving them out.
     has_ph = bool(re.search(r"producthunt\.com/(?:posts|widgets)|api\.producthunt\.com", stripped, re.IGNORECASE))
-    if has_ph:
+    if not launch:
+        ph_checks.append(("Product Hunt embed (skipped; pass --producthunt to score it)", True, 0))
+    elif has_ph:
         ph_score += 5
         ph_checks.append(("Product Hunt launch widget or badge integrated", True, 5))
     else:
@@ -283,7 +286,9 @@ def audit_readme(content: str, file_path: str, max_origins: int = 4) -> dict:
 
     # Social Proof / Community
     has_social = bool(re.search(r"star-history\.com|contrib\.rocks|discord\.(?:gg|com/invite)|stargazers", stripped, re.IGNORECASE))
-    if has_social:
+    if not launch:
+        ph_checks.append(("Social proof (skipped; pass --producthunt to score it)", True, 0))
+    elif has_social:
         ph_score += 5
         ph_checks.append(("Social proof signals (Star History, Discord, Contributor wall) found", True, 5))
     else:
@@ -328,7 +333,9 @@ def audit_readme(content: str, file_path: str, max_origins: int = 4) -> dict:
 
     details["guardrails"] = guardrail_checks
 
-    raw_total = sum(scores.values())
+    # Without --producthunt the two launch checks drop out, so rescale the rest to 100.
+    max_raw = 100 if launch else 90
+    raw_total = round(sum(scores.values()) * 100 / max_raw)
     final_total = max(0, min(100, raw_total - penalties))
 
     return {
@@ -337,6 +344,7 @@ def audit_readme(content: str, file_path: str, max_origins: int = 4) -> dict:
         "raw_score": raw_total,
         "penalties": penalties,
         "max_score": 100,
+        "launch": launch,
         "scores": scores,
         "details": details,
         "origins": origins,
@@ -355,7 +363,8 @@ def print_report(audit: dict, verbose: bool = False, no_color: bool = False):
     total = audit["total_score"]
     color = c_green if total >= 85 else (c_yellow if total >= 65 else c_red)
 
-    print(f"\n{c_bold}{c_cyan}=== Hardened GHFM & Product Hunt README Audit Report ==={c_reset}")
+    mode = "launch (Product Hunt)" if audit.get("launch") else "standard"
+    print(f"\n{c_bold}{c_cyan}=== GHFM README Audit Report ({mode}) ==={c_reset}")
     print(f"Target File: {c_bold}{audit['file']}{c_reset}")
     print(f"Overall Score: {color}{c_bold}{total} / 100{c_reset} (Raw: {audit['raw_score']}, Penalties: -{audit['penalties']})\n")
 
@@ -370,7 +379,7 @@ def print_report(audit: dict, verbose: bool = False, no_color: bool = False):
         ("Frictionless Quickstart", "quickstart", 20),
         ("Visual Assets & Architecture", "visuals", 20),
         ("GHFM Craftsmanship", "craft", 20),
-        ("Product Hunt & Trust", "producthunt", 15),
+        ("Launch & Trust" if audit.get("launch") else "Trust", "producthunt", 15 if audit.get("launch") else 5),
     ]
 
     for label, key, max_cat in categories:
@@ -396,15 +405,16 @@ def print_report(audit: dict, verbose: bool = False, no_color: bool = False):
         for i, rec in enumerate(audit["recommendations"], 1):
             print(f"  {i}. {rec}")
     else:
-        print(f"{c_green}{c_bold}🎉 Phenomenal! This README meets elite Product Hunt & GHFM standards.{c_reset}")
+        print(f"{c_green}{c_bold}Every check passes.{c_reset}")
     print()
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Audit a README for GHFM craftsmanship & Product Hunt readiness.")
+    parser = argparse.ArgumentParser(description="Audit a README for GHFM craftsmanship; --producthunt adds launch checks.")
     parser.add_argument("file", help="Path to README.md file")
     parser.add_argument("--verbose", "-v", action="store_true", help="Show granular check details")
     parser.add_argument("--json", action="store_true", help="Output raw JSON results")
+    parser.add_argument("--producthunt", action="store_true", help="Also score launch checks: Product Hunt embed and social proof")
     parser.add_argument("--threshold", type=int, default=70, help="Minimum score required to exit with code 0 (default: 70)")
     parser.add_argument("--max-bytes", type=int, default=1048576, help="Maximum file size in bytes to audit (default: 1MB)")
     parser.add_argument("--no-color", action="store_true", help="Disable ANSI color codes")
@@ -426,7 +436,7 @@ def main():
         print(f"Error reading file '{args.file}': {e}", file=sys.stderr)
         sys.exit(2)
 
-    results = audit_readme(content, args.file)
+    results = audit_readme(content, args.file, launch=args.producthunt)
 
     if args.json:
         print(json.dumps(results, indent=2))
