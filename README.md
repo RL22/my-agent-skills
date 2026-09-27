@@ -23,6 +23,7 @@ Self-authored [Agent Skills](https://agentskills.io) that work across Claude Cod
 | [`model-delegation`](skills/model-delegation/SKILL.md) | Execute runtime cross-CLI subprocess calls via delegate.sh across agy (Gemini), codex (GPT), and claude (Claude). Routes high-volume reads, ... |
 | [`og-image`](skills/og-image/SKILL.md) | Design and generate Open Graph / social preview images (1200x630 cards) using a brand-agnostic atomic design system and @vercel/og (Satori/I... |
 | [`programmatic-brand-assets`](skills/programmatic-brand-assets/SKILL.md) | Use when designing logos, favicons, PWA icons, app icons, brand marks, or brand asset packages from SVG, Canvas, p5.js, or deterministic geo... |
+| [`readme`](skills/readme/SKILL.md) | Craft high-converting, Product Hunt-worthy READMEs with GitHub Flavored Markdown: archetype templates, above-the-fold patterns, and an audit script... |
 | [`sketch`](skills/sketch/SKILL.md) | Hand-drawn, lo-fi UX deliverables from a JSON spec: user flows, screens, component sheets, sitemaps, journey maps, iter... |
 | [`skillvault`](skills/skillvault/SKILL.md) | Establish ~/.agents/skills as the single source of truth for reusable agent skills, evaluate candidate skills with SIFT, and retrofit old ag... |
 | [`video-edit`](skills/video-edit/SKILL.md) | Turn recorded raw footage into a finished, published video using a local agentic pipeline: MLX-Whisper transcription, FFmpeg cuts, Remotion ... |
