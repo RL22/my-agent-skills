@@ -1,42 +1,83 @@
+<div align="center">
+
 # My Agent Skills
 
-Self-authored [Agent Skills](https://agentskills.io) that work across Claude Code, Codex, Cursor, OpenCode and similar agents. Each skill is a folder under `skills/` with a `SKILL.md`.
+**23 self-authored skills that teach your coding agent to design, write, ship and run its own ops.**
+
+Plain [Agent Skills](https://agentskills.io) folders: one `SKILL.md` each, no plugin runtime.
+They work in Claude Code, Codex, Cursor, OpenCode and any agent that reads the standard.
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-2f2f2f?style=flat-square)](LICENSE)
+[![Skills: 23](https://img.shields.io/badge/skills-23-2f2f2f?style=flat-square)](#skills)
+[![Agent Skills standard](https://img.shields.io/badge/standard-Agent%20Skills-2f2f2f?style=flat-square)](https://agentskills.io)
+
+[Skills](#skills) • [Quickstart](#quickstart) • [Configuration](#configuration) • [License](#license)
+
+<img src="assets/hero.jpg" alt="Hand-drawn map of the repo: your agent branches into Design, Content, Agent ops and Automation skills" width="860">
+
+<sub>Drawn by <a href="skills/sketch">sketch</a>, one of the skills below, from <a href="assets/hero.json">this short JSON spec</a>.</sub>
+
+</div>
+
+## Quickstart
+
+Clone once, then link the skills you want into your agent's skills folder:
+
+```bash
+git clone https://github.com/RL22/my-agent-skills.git
+ln -s "$PWD/my-agent-skills/skills/sketch" ~/.claude/skills/sketch
+```
+
+Use `~/.agents/skills/` or your agent's own skills directory in place of `~/.claude/skills/` as needed.
+Invoke a skill by name (`/sketch flow …`) or just describe the task; the agent picks it from its description.
+
+> [!TIP]
+> Link several at once: `for s in sketch og-image readme; do ln -s "$PWD/my-agent-skills/skills/$s" ~/.claude/skills/$s; done`
 
 ## Skills
 
-| Skill | Description |
-| --- | --- |
-| [`absorb`](skills/absorb/SKILL.md) | Ingest external media (video, article, thread) to extract architectural patterns, audit a target asset, and orchestrate upgrades via map-gra... |
-| [`content-ideas`](skills/content-ideas/SKILL.md) | Your For You page for content creators. Scrapes tracked competitors across social media platforms, scores what's performing, and turns it in... |
-| [`content-outline`](skills/content-outline/SKILL.md) | Generate a waterfall-ready content script outline from a YouTube URL, article link, raw idea, or markdown file. Produces a structured outlin... |
-| [`create-thumbnail`](skills/create-thumbnail/SKILL.md) | Generate YouTube thumbnail candidates by cutting the subject out of a source frame or photo with rembg's BiRefNet engine, then compositing i... |
-| [`create-visuals`](skills/create-visuals/SKILL.md) | Design rules and motion patterns for building polished Remotion videos and animated graphics: color system, typography, scene architecture, ... |
-| [`elg-engine`](skills/elg-engine/SKILL.md) | Generate authentic quintuple-perspective social posts (builder, gtm, talent, visionary, product) from git diffs, PRDs, and changelogs with a... |
-| [`eval-engine`](skills/eval-engine/SKILL.md) | Design, benchmark, and run agent evaluations across 3 tiers: Easy Mode (binary verifiers), Hard Mode (isolated digital clone environments), ... |
-| [`failure-ledger`](skills/failure-ledger/SKILL.md) | Extract root causes from the runtime failure ledger and transcripts, compile positive rules into AGENTS.md, and prevent recurring execution ... |
-| [`gws-gmail-cleanup`](skills/gws-gmail-cleanup/SKILL.md) | Audit and clean Gmail storage using Google Workspace CLI. Use when the user wants to install or verify gws, connect Gmail, audit inbox stora... |
-| [`img-brandkit`](skills/img-brandkit/SKILL.md) | Premium brand-kit image generation and visual-world presentation prompter. Generates structured 3x3 and 2x3 identity boards, logo systems, a... |
-| [`img-gen`](skills/img-gen/SKILL.md) | Image generation and editing. Triggers on requests to create, edit, or modify visual assets (img, photo, logo, banner, /img-gen). |
-| [`job-search-operator`](skills/job-search-operator/SKILL.md) | Evaluate and score job descriptions; create tailored applications, resumes, and cover letters; draft LinkedIn or recruiter outreach; discove... |
-| [`linkedin-scout`](skills/linkedin-scout/SKILL.md) | Automated LinkedIn discovery of people, job postings, companies, feed posts, and DM threads via passive CDP Voyager GraphQL sniffing, Select... |
-| [`map-graph`](skills/map-graph/SKILL.md) | Architect complex tasks into directed agent graphs (DAGs) with model tier routing, state schemas, and guardrails. Trigger on /map-graph, "gr... |
-| [`model-delegation`](skills/model-delegation/SKILL.md) | Execute runtime cross-CLI subprocess calls via delegate.sh across agy (Gemini), codex (GPT), and claude (Claude). Routes high-volume reads, ... |
-| [`og-image`](skills/og-image/SKILL.md) | Design and generate Open Graph / social preview images (1200x630 cards) using a brand-agnostic atomic design system and @vercel/og (Satori/I... |
-| [`programmatic-brand-assets`](skills/programmatic-brand-assets/SKILL.md) | Use when designing logos, favicons, PWA icons, app icons, brand marks, or brand asset packages from SVG, Canvas, p5.js, or deterministic geo... |
-| [`readme`](skills/readme/SKILL.md) | Craft high-converting, Product Hunt-worthy READMEs with GitHub Flavored Markdown: archetype templates, above-the-fold patterns, and an audit script... |
-| [`sketch`](skills/sketch/SKILL.md) | Hand-drawn, lo-fi UX deliverables from a JSON spec: user flows, screens, component sheets, sitemaps, journey maps, iter... |
-| [`skillvault`](skills/skillvault/SKILL.md) | Establish ~/.agents/skills as the single source of truth for reusable agent skills, evaluate candidate skills with SIFT, and retrofit old ag... |
-| [`video-edit`](skills/video-edit/SKILL.md) | Turn recorded raw footage into a finished, published video using a local agentic pipeline: MLX-Whisper transcription, FFmpeg cuts, Remotion ... |
-| [`virtual-staging`](skills/virtual-staging/SKILL.md) | Virtual staging for real estate. Enforces multi-angle fidelity via strict masking (PWA) and exact-manifest prompts. Preserves original archi... |
-| [`writing-for-humans`](skills/writing-for-humans/SKILL.md) | Draft, revise, or review clear, specific, ethical Sprintz writing for humans. Invoke when the user says "final draft", "write for human", or... |
+### 1 · Design and visuals
 
-## Install
+| Skill | What it does |
+| :--- | :--- |
+| [`sketch`](skills/sketch) | Hand-drawn, lo-fi UX deliverables from a JSON spec: flows, screens, component sheets, sitemaps, journey maps, traces of live pages, responsive sets. |
+| [`og-image`](skills/og-image/SKILL.md) | Open Graph / social preview cards (1200×630) from an atomic design system with `@vercel/og`. |
+| [`programmatic-brand-assets`](skills/programmatic-brand-assets/SKILL.md) | Logos, favicons, PWA and app icons from SVG, Canvas, p5.js or deterministic geometry. |
+| [`img-gen`](skills/img-gen/SKILL.md) | Create and edit images: photos, logos, banners. |
+| [`img-brandkit`](skills/img-brandkit/SKILL.md) | Brand-kit boards (3×3 and 2×3 identity grids, logo systems, visual decks), prompted and generated. |
+| [`create-visuals`](skills/create-visuals/SKILL.md) | Design rules and motion patterns for polished Remotion videos and animated graphics. |
+| [`create-thumbnail`](skills/create-thumbnail/SKILL.md) | YouTube thumbnail candidates: cut the subject out with rembg, then composite it. |
+| [`virtual-staging`](skills/virtual-staging/SKILL.md) | Real-estate virtual staging that keeps the original architecture intact across angles. |
 
-Copy or symlink any skill folder into your agent's skills directory (for example `~/.agents/skills/` or `~/.claude/skills/`):
+### 2 · Content and writing
 
-```bash
-ln -s "$PWD/skills/absorb" ~/.agents/skills/absorb
-```
+| Skill | What it does |
+| :--- | :--- |
+| [`readme`](skills/readme) | READMEs written like landing pages in GitHub Flavored Markdown, plus an audit script that scores one. |
+| [`writing-for-humans`](skills/writing-for-humans/SKILL.md) | Draft, revise or review clear, specific, human-sounding writing. |
+| [`content-ideas`](skills/content-ideas/SKILL.md) | Scrape the creators you track, score what's performing, and turn it into ideas. |
+| [`content-outline`](skills/content-outline/SKILL.md) | A structured script outline from a YouTube URL, article, markdown file or raw idea. |
+| [`video-edit`](skills/video-edit/SKILL.md) | Raw footage to a published video: transcription, FFmpeg cuts, Remotion graphics. |
+| [`elg-engine`](skills/elg-engine/SKILL.md) | Social posts from git diffs, PRDs and changelogs, written from five perspectives. |
+
+### 3 · Agent ops
+
+| Skill | What it does |
+| :--- | :--- |
+| [`model-delegation`](skills/model-delegation/SKILL.md) | Route work across the Gemini, GPT and Claude CLIs: bulk reads, live search, media, second-opinion reviews. |
+| [`map-graph`](skills/map-graph/SKILL.md) | Plan complex tasks as agent graphs (DAGs) with model tiers, state schemas and guardrails. |
+| [`eval-engine`](skills/eval-engine/SKILL.md) | Design and run agent evaluations, from binary verifiers to trace-mining improvement loops. |
+| [`failure-ledger`](skills/failure-ledger/SKILL.md) | Turn failed runs into root causes and standing rules in `AGENTS.md`. |
+| [`absorb`](skills/absorb/SKILL.md) | Pull patterns out of a video, article or thread and apply them to your own project. |
+| [`skillvault`](skills/skillvault/SKILL.md) | Keep one portable skills library as the source of truth, and vet new skills before adding them. |
+
+### 4 · Automation
+
+| Skill | What it does |
+| :--- | :--- |
+| [`gws-gmail-cleanup`](skills/gws-gmail-cleanup/SKILL.md) | Audit Gmail storage with the Google Workspace CLI and clean it with rules you approve. |
+| [`job-search-operator`](skills/job-search-operator/SKILL.md) | Score job descriptions, tailor applications, and prepare outreach and interviews. |
+| [`linkedin-scout`](skills/linkedin-scout/SKILL.md) | Find people, jobs, companies and posts from your own logged-in LinkedIn session. |
 
 ## Dependencies between skills
 
@@ -49,12 +90,39 @@ Some skills call scripts in a sibling skill by relative path, so install them to
 
 ## Configuration
 
-`sketch` renders with Node 18+ and a headless Chromium: run `npm install && npx playwright-core install chromium` once inside `skills/sketch/`.
+Most skills need nothing beyond the agent. These need a one-time setup:
 
-`content-outline`, `video-edit` and `create-thumbnail` read `SPRINTZ_CONTENT_DIR`, and `linkedin-scout` reads `SPRINTZ_JOB_SEARCH_DIR`. Defaults point at `~/Sprintz/...`. Point these at your own directories, or edit the paths in each `SKILL.md`.
+<details>
+<summary><b>sketch</b>: Node 18+ and a headless Chromium</summary>
+<br>
 
-## Licensing
+```bash
+cd my-agent-skills/skills/sketch
+npm install && npx playwright-core install chromium
+```
 
-Repository code is MIT (see `LICENSE`). A skill's own `license:` frontmatter takes precedence; `elg-engine` is Apache-2.0. `sketch` bundles rough.js (MIT) and three SIL OFL fonts, with their licenses in `skills/sketch/scripts/vendor/`.
+</details>
 
-`linkedin-scout` automates a logged-in LinkedIn session. Review LinkedIn's terms and use it only on your own account and data. All fixtures in this repo are fictional.
+<details>
+<summary><b>content-outline, video-edit, create-thumbnail, linkedin-scout</b>: working directories</summary>
+<br>
+
+`content-outline`, `video-edit` and `create-thumbnail` read `SPRINTZ_CONTENT_DIR`; `linkedin-scout` reads
+`SPRINTZ_JOB_SEARCH_DIR`. Both default to folders under `~/Sprintz/`. Point them at your own directories:
+
+```bash
+export SPRINTZ_CONTENT_DIR="$HOME/content"
+export SPRINTZ_JOB_SEARCH_DIR="$HOME/job-search"
+```
+
+</details>
+
+> [!IMPORTANT]
+> `linkedin-scout` automates a logged-in LinkedIn session. Review LinkedIn's terms and use it only on your own
+> account and data. All fixtures in this repo are fictional.
+
+## License
+
+MIT; see [`LICENSE`](LICENSE). A skill's own `license:` frontmatter takes precedence: `elg-engine` is Apache-2.0.
+`sketch` bundles rough.js (MIT) and three SIL OFL fonts, with their licenses in
+[`skills/sketch/scripts/vendor/`](skills/sketch/scripts/vendor).
